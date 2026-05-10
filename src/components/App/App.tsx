@@ -6,7 +6,7 @@ import type { Movie, Movies } from "../../types/movie";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import toast from "react-hot-toast";
-import { fetchMovies, isRequestCanceled } from "../../api/movies";
+import { fetchMovies, isRequestCanceled } from "../../services/movieService";
 import MovieModal from "../MovieModal/MovieModal";
 import Pagination from "../Pagination/Pagination";
 
