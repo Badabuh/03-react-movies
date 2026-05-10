@@ -1,5 +1,14 @@
 import axios from "axios";
-import type { Movies, MoviesResponse } from "../types/movie";
+import type { Movie } from "../types/movie";
+
+export type Movies = Movie[];
+
+export interface MoviesResponse {
+  page: number;
+  results: Movies;
+  total_pages: number;
+  total_results: number;
+}
 
 const tmdbClient = axios.create({
   baseURL: "https://api.themoviedb.org/3",

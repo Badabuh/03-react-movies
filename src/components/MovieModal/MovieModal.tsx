@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { Movie } from "../../types/movie";
 import css from "./MovieModal.module.css";
 
@@ -9,13 +10,6 @@ interface MovieModalProps {
 
 export default function MovieModal({ movie, onClose }: MovieModalProps) {
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (target.classList.contains(css.backdrop)) {
-        onClose();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
@@ -29,12 +23,21 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
     return () => {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
-  return (
-    <div className={css.backdrop} role="dialog" aria-modal="true">
-      <div className={css.modal}>
+
+  function stopPropagation(e: React.MouseEvent) {
+    e.stopPropagation();
+  }
+
+  return createPortal(
+    <div
+      className={css.backdrop}
+      role="dialog"
+      aria-modal="true"
+      onClick={onClose}
+    >
+      <div className={css.modal} onClick={stopPropagation}>
         <button
           className={css.closeButton}
           aria-label="Close modal"
@@ -58,6 +61,7 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
           </p>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

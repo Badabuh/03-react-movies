@@ -2,7 +2,7 @@ import styles from "./App.module.css";
 import SearchBar from "../SearchBar/SearchBar";
 import MovieGrid from "../MovieGrid/MovieGrid";
 import { useEffect, useState } from "react";
-import type { Movie, Movies } from "../../types/movie";
+import type { Movie } from "../../types/movie";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import toast from "react-hot-toast";
@@ -12,21 +12,12 @@ import Pagination from "../Pagination/Pagination";
 
 export default function App() {
   const [query, setQuery] = useState("");
-  const [movies, setMovies] = useState<Movies>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-
-  function handleSelectMovie(movieId: number) {
-    const movie = movies.find((item) => item.id === movieId) ?? null;
-    setSelectedMovie(movie);
-  }
-
-  function handleCloseModal() {
-    setSelectedMovie(null);
-  }
 
   function handleSearch(newQuery: string) {
     setQuery(newQuery);
@@ -75,12 +66,12 @@ export default function App() {
 
   return (
     <div className={styles.app}>
-      <SearchBar onSearch={handleSearch} />
+      <SearchBar onSubmit={handleSearch} />
       {loading && <Loader />}
       {error && <ErrorMessage />}
       {movies.length > 0 && (
         <>
-          <MovieGrid movies={movies} onSelect={handleSelectMovie} />
+          <MovieGrid movies={movies} onSelect={setSelectedMovie} />
           <Pagination
             page={page}
             totalPages={totalPages}
@@ -89,7 +80,10 @@ export default function App() {
         </>
       )}
       {selectedMovie && (
-        <MovieModal movie={selectedMovie} onClose={handleCloseModal} />
+        <MovieModal
+          movie={selectedMovie}
+          onClose={() => setSelectedMovie(null)}
+        />
       )}
     </div>
   );
